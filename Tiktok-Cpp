@@ -1,0 +1,29 @@
+// This script applies a color tint to the camera texture
+
+// @input Component.Camera camera
+// @input float intensity = 0.5
+// @input vec3 tintColor = {1.0, 0.0, 0.0} // Red tint
+
+var camTex = script.camera.renderTarget;
+
+// Create a new material with a tint shader
+var tintMaterial = script.createMaterial("TintShader");
+tintMaterial.mainPass.tintColor = script.tintColor;
+tintMaterial.mainPass.intensity = script.intensity;
+
+// Create a full screen image
+var screenImage = script.createSceneObject("ScreenImage");
+var imageComponent = screenImage.createComponent("Component.Image");
+imageComponent.mainMaterial = tintMaterial;
+imageComponent.mainPass.baseTex = camTex;
+
+// Update the tint dynamically if needed
+function updateTint(newColor, newIntensity) {
+    tintMaterial.mainPass.tintColor = newColor;
+    tintMaterial.mainPass.intensity = newIntensity;
+}
+
+// Example: Change tint to blue after 3 seconds
+script.createEvent("DelayedCallbackEvent").bind(function() {
+    updateTint(new vec3(0.0, 0.0, 1.0), 0.7);
+}).reset(3.0);
